@@ -8,14 +8,21 @@ load_dotenv(dotenv_path)
 
 class Db:
     def __init__(self):
-        self.__connection = pymysql.connect(
-            host=os.getenv("HOST"),
-            user=os.getenv("USER"),
-            password=os.getenv("PASSWORD"),
-            database=os.getenv("DATABASE"),
-            cursorclass=pymysql.cursors.DictCursor
-        )
+        try:
+            self.__connection = pymysql.connect(
+                host=os.getenv("HOST"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASSWORD"),
+                database=os.getenv("DATABASE"),
+                cursorclass=pymysql.cursors.DictCursor
+            )
+        except pymysql.MySQLError as e:
+            raise RuntimeError(f"Database connection failed: {e}")
 
 
     def _get_connection(self):
         return self.__connection
+
+    def close(self):
+        if self.__connection:
+            self.__connection.close()
