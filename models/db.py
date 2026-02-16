@@ -7,7 +7,13 @@ dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 class Db:
+    """
+    Manage database connection using PyMySQL.
+    """
     def __init__(self):
+        """
+        Initialize database connection using environment variables.
+        """
         try:
             self.__connection = pymysql.connect(
                 host=os.getenv("HOST"),
@@ -21,8 +27,16 @@ class Db:
 
 
     def _get_connection(self):
+        """
+        Return active database connection.
+        :return: PyMySQL connection object.
+        """
         return self.__connection
 
     def close(self):
+        """
+        Close the database connection.
+        :return: None.
+        """
         if self.__connection:
             self.__connection.close()
