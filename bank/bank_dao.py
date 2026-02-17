@@ -1,5 +1,4 @@
 
-import pymysql
 from models.db import Db
 from bank import Bank
 
@@ -7,38 +6,13 @@ from bank import Bank
 class BankDAO(Db):
     """
     Data Access Object layer for bank operations.
-    Encapsulates SQL logic and centralize query execution via protected method.
+    Encapsulates SQL logic and centralizes query execution via protected method.
     Returned data types vary depending on method (dicts, list of dicts, int or None).
-    Inheritance from Db allows database connection.
+    Inherits from Db to manage database connection.
     """
     def __init__(self):
         super().__init__()
-        self.con = self._get_connection()
 
-
-    def _execute_query(self, query, params=None, commit=False, fetch="one"):
-        """
-        Protected method that centralizes SQL query execution.
-        :param query:SQL query string.
-        :param params:Parameters for the SQL query (tuple or list).
-        :param commit:Whether to commit the transaction (for INSERT, UPDATE or DELETE).
-        :param fetch:Fetch mode for SELECT queries ('one' or 'all').
-        :return:dict, list of dicts, int, or None depending on query type.
-        """
-        try:
-            with self.con.cursor() as cursor:
-                # if params are passed use them in query
-                cursor.execute(query, params or ())
-            if commit:
-                self.con.commit()
-                return cursor.lastrowid
-            if fetch == "one":
-                return cursor.fetchone()
-            elif fetch == "all":
-                return cursor.fetchall()
-        except pymysql.MySQLError as e:
-            self.con.rollback()
-            raise RuntimeError(f"Database query failed while executing:{query}, Error: {e}")
 
     def insert(self, bank: Bank) -> int:
         """

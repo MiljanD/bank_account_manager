@@ -36,7 +36,34 @@ class Db:
     def close(self):
         """
         Close the database connection.
-        :return: None.
+        :return: None
         """
         if self.__connection:
             self.__connection.close()
+
+    def _execute_query(self, query, params=None, commit=False, fetch="one"):
+        """
+        Protected method that centralizes SQL query execution using the active connection.
+        Handles parameter binding, transaction commit/rollback, and fetch modes.
+        Raises RuntimeError on database errors. Intended for internal DAO usage.
+
+        :param query:SQL query string.
+        :param params:Parameters for the SQL query (tuple or list).
+        :param commit:Whether to commit the transaction (for INSERT, UPDATE or DELETE).
+        :param fetch:Fetch mode for SELECT queries ('one' or 'all').
+        :return:dict, list of dicts, int, or None depending on query type.
+        """
+        try:
+            with self._get_connection() as cursor:
+                # if params are passed use them in query
+                cursor.execute(query, params or ())
+            if commit:
+                self._get_connection().commit()
+                return cursor.lastrowid
+            if fetch == "one":
+                return cursor.fetchone()
+            elif fetch == "all":
+                return cursor.fetchall()
+        except pymysql.MySQLError as e:
+            self._get_connection().rollback()
+            raise RuntimeError(f"Database query failed while executing:{query}, Error: {e}")

@@ -5,7 +5,7 @@ class BankAccount:
     Represents a bank account with an owner and balance.
     Provides methods for depositing and withdrawing funds.
     """
-    def __init__(self, owner, balance=0):
+    def __init__(self, owner, balance=0, acc_id=None):
         """
         Initialize a new bank account.
         :param owner: Name of the account owner.
@@ -13,12 +13,13 @@ class BankAccount:
         """
         self.owner = owner
         self.balance = balance
+        self.id = acc_id
 
     def deposit(self, amount) -> str|None:
         """
         Deposit funds into the account.
         :param amount: Amount to deposit (must be numeric).
-        :return: None if successful, otherwise error message..
+        :return: None if successful, otherwise error message.
         """
         if isinstance(amount, (int, float)):
             self.balance += amount
