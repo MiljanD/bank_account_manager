@@ -67,3 +67,23 @@ class Db:
         except pymysql.MySQLError as e:
             self._get_connection().rollback()
             raise RuntimeError(f"Database query failed while executing:{query}, Error: {e}")
+
+    def _execute_transaction(self, queries: list[tuple]) -> list[int]:
+        """
+        Execute multiple SQL queries as a single transaction.
+        All queries are executed in order; if any query fails, the entire transaction is rolled back.
+        :param queries: List of tuples (query, params) representing SQL statements and their parameters.
+        :raises RuntimeError: If any query fails during execution.
+        :return: List of affected row counts for each executed query.
+        """
+        try:
+            affected_rows = []
+            for query in queries:
+                with self._get_connection().cursor() as cursor:
+                    cursor.execute(query[0], query[1])
+                    affected_rows.append(cursor.rowcount)
+            self._get_connection().commit()
+            return affected_rows
+        except pymysql.MySQLError as e:
+            self._get_connection().rollback()
+            raise RuntimeError(f"Database query failed while executing transaction: {e}")

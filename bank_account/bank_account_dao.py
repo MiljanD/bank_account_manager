@@ -1,3 +1,5 @@
+import pymysql
+
 from models.db import Db
 from bank_account import BankAccount
 
@@ -18,6 +20,29 @@ class BankAccountDAO(Db):
     def delete_account(self, account: BankAccount) -> None:
         query = "DELETE FROM account_manager.accounts WHERE id=%s"
         self._execute_query(query, (account.id,), commit=True)
+
+    def balance_check(self, acc_id, amount):
+        query = "SELECT id FROM account_manager.accounts WHERE balance >= %s AND id=%s"
+        if self._execute_query(query, (amount, acc_id,)):
+            return True
+        return False
+
+    def transfer(self, sender: BankAccount, receiver: BankAccount, amount):
+        if self.balance_check(sender.id, amount):
+            sender.withdraw(amount)
+            self.balance_update(sender)
+            receiver.deposit(amount)
+            self.balance_update(receiver)
+
+            query = "INSERT INTO account_manager.transactions (acc_id, operation, amount) VALUES (%s, %s, %s)"
+            self._execute_query(query, (sender.id, "withdraw", amount), commit=True)
+            self._execute_query(query, (receiver.id, "deposit", amount), commit=True)
+
+
+
+
+
+
 
     def all_accounts(self) -> list[dict]:
         query = "SELECT * FROM account_manager.accounts"
