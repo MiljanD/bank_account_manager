@@ -27,16 +27,22 @@ class BankAccountDAO(Db):
             return True
         return False
 
-    def transfer(self, sender: BankAccount, receiver: BankAccount, amount):
+    def transfer(self, sender: BankAccount, receiver: BankAccount, amount) -> list[int]|str:
         if self.balance_check(sender.id, amount):
             sender.withdraw(amount)
             self.balance_update(sender)
             receiver.deposit(amount)
             self.balance_update(receiver)
 
-            query = "INSERT INTO account_manager.transactions (acc_id, operation, amount) VALUES (%s, %s, %s)"
-            self._execute_query(query, (sender.id, "withdraw", amount), commit=True)
-            self._execute_query(query, (receiver.id, "deposit", amount), commit=True)
+            send_query = "INSERT INTO account_manager.transactions (acc_id, operation, amount) VALUES (%s, %s, %s)"
+            receive_query = "INSERT INTO account_manager.transactions (acc_id, operation, amount) VALUES (%s, %s, %s)"
+            queries = [(send_query, (sender.id, "withdraw", amount)), (receive_query, (receiver.id, "deposit", amount))]
+
+            return self._execute_transaction(queries)
+        return "Insufficient funds"
+
+
+
 
 
 
