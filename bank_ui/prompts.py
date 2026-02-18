@@ -1,6 +1,6 @@
 
 
-class BankUI:
+class Prompts:
     """
     User Interface layer for bank application.
     Provides screen prompts and menus for user interaction.
