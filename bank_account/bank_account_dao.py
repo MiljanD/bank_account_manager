@@ -6,8 +6,9 @@ from bank_account import BankAccount
 
 class BankAccountDAO(Db):
     """
-    Data Access Object layer for bank operations.
+    Data Access Object layer for bank account operations and account transactions.
     Encapsulates SQL logic and centralizes query execution via protected methods.
+    Handles CRUD operations for accounts and ensures all balance changes are recorded in the transactions table.
     Returned data types vary depending on method (dicts, list of dicts, int or None).
     Inherits from Db to manage database connection.
     """
