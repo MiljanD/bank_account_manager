@@ -1,4 +1,3 @@
-import pymysql
 
 from models.db import Db
 from bank_account import BankAccount
