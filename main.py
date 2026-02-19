@@ -1,8 +1,6 @@
-from bank_ui.display import Display
+from bank_app.bank_app import BankApp
 
-cols = {"id": 1, "bank_id":2, "owner":3, "balance":2, "acc_id":5}
-cols2 = [{"id": 1, "bank_id":2, "owner":3, "balance":2, "acc_id":5},
-         {"id": 1, "bank_id":2, "owner":3, "balance":2, "acc_id":5}]
 
-display = Display()
-display.display_content(cols)
+if __name__ == "__main__":
+    app = BankApp()
+    app.run()

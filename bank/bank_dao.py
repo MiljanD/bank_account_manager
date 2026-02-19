@@ -1,6 +1,6 @@
 
 from models.db import Db
-from bank import Bank
+from bank.bank import Bank
 
 
 class BankDAO(Db):
@@ -12,7 +12,6 @@ class BankDAO(Db):
     """
     def __init__(self):
         super().__init__()
-
 
     def insert(self, bank: Bank) -> int:
         """

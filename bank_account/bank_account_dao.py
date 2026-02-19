@@ -1,6 +1,6 @@
 
 from models.db import Db
-from bank_account import BankAccount
+from bank_account.bank_account import BankAccount
 
 
 class BankAccountDAO(Db):
