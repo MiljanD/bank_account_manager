@@ -12,6 +12,7 @@ class Prompts:
         self.account_options = ["Generate new account", "Account Info", "Make Transaction", "Return"]
         self.operation_options = ["Deposit", "Withdraw", "Transfer", "Return"]
         self.transaction_options = ["All transactions", "Account transactions", "Return"]
+        self.yes_or_no = ["Yes", "No"]
         self.separation = 30 * "*"
 
     def show_options(self, options) -> int|None:
@@ -63,3 +64,72 @@ class Prompts:
         :return: Index of selected option or None if input is invalid.
         """
         return self.show_options(self.transaction_options)
+
+    def first_deposit(self) -> int|None:
+        """
+        Ask the user if they want to make an initial deposit.
+        :return: User choice from yes/no options (int) or None if invalid.
+        """
+        print("Do you want to make deposit?")
+        return self.show_options(self.yes_or_no)
+
+    def _validate_entry(self, entry, data_entry) -> int|float|str|None:
+        """
+        Validate and convert user input based on expected data type.
+        :param entry: Raw user input string.
+        :param data_entry: Expected type ('id', 'amount', 'name').
+        :return: Converted value (int, float, str) or None if invalid.
+        """
+        try:
+            match data_entry:
+                case "id":
+                    return int(entry)
+                case "amount":
+                    return float(entry)
+                case "name":
+                    if not entry.strip():
+                        return None
+                    return entry.strip()
+        except ValueError:
+            return None
+
+
+    def amount_entry(self) -> float|None:
+        """
+        Prompt the user to enter an amount.
+        :return: Float value of amount or None if invalid.
+        """
+        amount = input("Enter amount: ")
+        return self._validate_entry(amount, "amount")
+
+    def bank_id_entry(self) -> int|None:
+        """
+        Prompt the user to enter a bank ID.
+        :return: Integer bank ID or None if invalid.
+        """
+        bank_id = input("Enter bank ID: ")
+        return self._validate_entry(bank_id, "id")
+
+    def account_id_entry(self) -> int|None:
+        """
+        Prompt the user to enter an account ID.
+        :return: Integer account ID or None if invalid.
+        """
+        acc_id = input("Enter account ID: ")
+        return self._validate_entry(acc_id, "id")
+
+    def account_owner_entry(self) -> str|None:
+        """
+        Prompt the user to enter the account owner's name.
+        :return: Owner name string or None if invalid/empty.
+        """
+        owner_name =  input("Enter account owner name: ")
+        return self._validate_entry(owner_name, "name")
+
+    def bank_name_entry(self) -> str|None:
+        """
+        Prompt the user to enter a bank name.
+        :return: Bank name string or None if invalid/empty.
+        """
+        bank_name = input("Enter bank name: ")
+        return self._validate_entry(bank_name, "name")

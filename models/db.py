@@ -54,7 +54,7 @@ class Db:
         :return:dict, list of dicts, int, or None depending on query type.
         """
         try:
-            with self._get_connection() as cursor:
+            with self._get_connection().cursor() as cursor:
                 # if params are passed use them in query
                 cursor.execute(query, params or ())
             if commit:
